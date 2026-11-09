@@ -16,7 +16,11 @@ from pathlib import Path
 
 BANNED = ["excited to announce", "delighted", "game-changer", "game changer",
           "revolutionary", "unlock", "leverage", "seamless", "delve",
-          "i am excited", "thrilled to"]
+          "i am excited", "thrilled to", "deep dive", "at the end of the day",
+          "needle-moving", "harness", "streamline", "foster", "fundamentally",
+          "here's what", "here's how", "the result?", "plot twist",
+          "stop ", "quietly", "load-bearing", "doing the heavy lifting",
+          "let that sink in", "the real story"]
 PLAIN_WORD = re.compile(r"^[a-z0-9]+$")
 HAS_SOURCE = re.compile(r"(https?://|\.py\b|\.json\b|/|::)")
 
@@ -54,8 +58,8 @@ def check(spec: dict, spec_dir: Path) -> list[str]:
         failures.append("no https link")
 
     hashtags = spec.get("hashtags") or []
-    if not 3 <= len(hashtags) <= 5:
-        failures.append(f"{len(hashtags)} hashtags, need 3-5")
+    if len(hashtags) > 2:
+        failures.append(f"{len(hashtags)} hashtags, the 2026 rule is 0-2")
     for tag in hashtags:
         if not PLAIN_WORD.match(tag):
             failures.append(f"hashtag {tag!r} is not a plain word")
@@ -83,8 +87,24 @@ def check(spec: dict, spec_dir: Path) -> list[str]:
         if word in rendered:
             failures.append(f"banned word: {word}")
 
-    if len(render(spec)) > 3000:
-        failures.append(f"post is {len(render(spec))} characters, max 3000")
+    text = render(spec)
+    if hook:
+        first_line = hook.splitlines()[0].strip()
+        if first_line.endswith("?"):
+            failures.append("first line is a question (-34% median likes in 2026)")
+        if not re.search(r"\d", first_line):
+            failures.append("first line has no number (number-first is +34%)")
+    words = len(text.split())
+    em_dashes = text.count("—")
+    if em_dashes > max(1, words // 100):
+        failures.append(f"{em_dashes} em dashes for {words} words, cap is about 1 per 100")
+    if "—" in text and "–" in text:
+        failures.append("en dash and em dash both present")
+    if "--" in text:
+        failures.append("double dash present")
+
+    if len(text) > 3000:
+        failures.append(f"post is {len(text)} characters, max 3000")
     return failures
 
 

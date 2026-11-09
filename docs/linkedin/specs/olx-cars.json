@@ -2,18 +2,19 @@
   "slug": "olx-cars",
   "date": "2026-11-09",
   "title": "OLX India used cars, from a terminal and from an agent",
-  "format": "build-in-public",
-  "hook": "curl, Python requests, even headless Chrome: three clients, three connection resets from OLX.\n\nThe block wasn't a captcha. It was the TLS handshake.",
+  "format": "F7-odd-precision-money-ledger",
+  "hook": "₹0, 592 lines of Python, 1 dependency.\n\nOLX India has no public API, so I read the one its own frontend calls. Here is the whole ledger, nothing rounded:",
   "body": [
-    "OLX drops anything whose TLS ClientHello doesn't look like a browser. Not with a captcha - with a connection reset, before a byte of HTML arrives. Chrome itself got reset. So did curl. So did Python requests.",
-    "curl_cffi with a Chrome impersonation got through: 200 OK, clean JSON. After that it was just reading their own search API. One dependency, no proxy, no account, no API key.",
-    "The tool is a CLI and an MCP server for used cars in India:\n\nolxcars search \"swift\" --city chennai --min-price 300000 --max-price 600000 --year-min 2018",
-    "136 matching cars in Chennai, 20 per page, as JSON: price, year, km, fuel, transmission, owner count, city, seller type, photos, and the live listing URL.",
-    "The part that cost me the most time: OLX ignores unknown query parameters silently. A filter that doesn't exist looks exactly like a filter that worked. The only honest check was OLX's own applied_filters echo in the response, so the tool prints it on every run.",
-    "592 lines of Python for the tool, 152 for the tests. 8 tests - 5 offline, 3 live, including a full MCP round-trip. It installs as a Claude Code plugin with one command."
+    "- API key: ₹0\n- Proxy: ₹0\n- Account: ₹0\n- Dependencies: 1 (curl_cffi, impersonate=\"chrome\")\n- HTTP clients that got through: 1 of 4\n- OLX requests per search: 1\n- Cars per response: 20\n- Python: 592 lines, plus 152 of tests\n- Tests: 8 (5 offline, 3 live, one full MCP round-trip)",
+    "The obvious path was a scraping proxy. I never bought one, so I never found out what it costs.",
+    "curl, Python requests and headless Chrome all got a connection reset from OLX — before a byte of HTML arrived. Chrome itself was blocked, which is the part that took me the longest to believe. The error was ERR_HTTP2_PROTOCOL_ERROR, a TLS-layer problem wearing an HTTP costume. curl_cffi sends a real Chrome handshake, so it got 200 OK and clean JSON.",
+    "The surprise came later. OLX ignores unknown query parameters silently, so a filter that does not exist looks exactly like a filter that worked. Nothing errors. The filter just returns everything. The only honest check was OLX's own applied_filters echo in the response, so the tool prints it on every run.",
+    "136 used cars in Chennai between ₹3,00,000 and ₹6,00,000, 2018 onwards, in one request. Each car carries price, year, km, fuel, transmission, owner count, city, seller type and the live listing URL, so an agent can rank them without opening a browser.",
+    "One handshake beat four clients.",
+    "Which layer burned you last: the handshake, the auth, or the rate limit?"
   ],
-  "cta": "Try it: https://github.com/aswathas/olx-car-search",
-  "hashtags": ["opensource", "python", "mcp", "aiagents"],
+  "cta": "P.S. The repo is public and MIT, and installs as a Claude Code plugin with one command: github.com/aswathas/olx-car-search",
+  "hashtags": ["opensource", "python"],
   "links": [
     {"label": "olxcars on GitHub", "url": "https://github.com/aswathas/olx-car-search"}
   ],
@@ -27,12 +28,18 @@
       "path": "media/02-proof.png",
       "alt": "Terminal window showing the JSON output of one olxcars search result, with the fields id, title, price, year, km, fuel, transmission, owner, city, state, coordinates, seller type and the listing URL.",
       "caption": "One car, every field an agent needs to rank it"
+    },
+    {
+      "path": "media/03-destination.png",
+      "alt": "The GitHub page for aswathas/olx-car-search, showing the repository listed as public with an MIT license and the folders .claude-plugin, docs, olxcars, skills, tests and tools.",
+      "caption": "Public, MIT, and installable as a Claude Code plugin"
     }
   ],
   "evidence": [
     "olxcars/client.py - every OLX URL and query-parameter name in one module",
-    "curl_cffi requests.get(..., impersonate='chrome') - the only client that returned HTTP 200 from www.olx.in",
+    "curl_cffi requests.get(..., impersonate='chrome') - the only client that returned HTTP 200 from www.olx.in; curl, Python requests and headless Chrome were reset",
     "tests/test_models.py - 5 offline tests; tests/test_live.py - 3 live tests including an MCP stdio round-trip",
-    "python -m pytest -q -> 5 passed, 3 skipped; OLXCARS_LIVE=1 python -m pytest -> 8 passed"
+    "python -m pytest -q -> 5 passed, 3 skipped; OLXCARS_LIVE=1 python -m pytest -> 8 passed",
+    "Live search output: 20 of 136 cars for swift + chennai + price 300000-600000 + year_min 2018"
   ]
 }

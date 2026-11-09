@@ -1,0 +1,38 @@
+{
+  "slug": "olx-cars",
+  "date": "2026-11-09",
+  "title": "OLX India used cars, from a terminal and from an agent",
+  "format": "build-in-public",
+  "hook": "curl, Python requests, even headless Chrome: three clients, three connection resets from OLX.\n\nThe block wasn't a captcha. It was the TLS handshake.",
+  "body": [
+    "OLX drops anything whose TLS ClientHello doesn't look like a browser. Not with a captcha - with a connection reset, before a byte of HTML arrives. Chrome itself got reset. So did curl. So did Python requests.",
+    "curl_cffi with a Chrome impersonation got through: 200 OK, clean JSON. After that it was just reading their own search API. One dependency, no proxy, no account, no API key.",
+    "The tool is a CLI and an MCP server for used cars in India:\n\nolxcars search \"swift\" --city chennai --min-price 300000 --max-price 600000 --year-min 2018",
+    "136 matching cars in Chennai, 20 per page, as JSON: price, year, km, fuel, transmission, owner count, city, seller type, photos, and the live listing URL.",
+    "The part that cost me the most time: OLX ignores unknown query parameters silently. A filter that doesn't exist looks exactly like a filter that worked. The only honest check was OLX's own applied_filters echo in the response, so the tool prints it on every run.",
+    "592 lines of Python for the tool, 152 for the tests. 8 tests - 5 offline, 3 live, including a full MCP round-trip. It installs as a Claude Code plugin with one command."
+  ],
+  "cta": "Try it: https://github.com/aswathas/olx-car-search",
+  "hashtags": ["opensource", "python", "mcp", "aiagents"],
+  "links": [
+    {"label": "olxcars on GitHub", "url": "https://github.com/aswathas/olx-car-search"}
+  ],
+  "images": [
+    {
+      "path": "media/01-hook.png",
+      "alt": "Terminal window showing olxcars searching OLX India for used Maruti Suzuki Swift cars in Chennai between 3 and 6 lakh rupees from 2018 onwards, listing six results with price, year, kilometres driven, model, transmission and city.",
+      "caption": "One command: six Chennai Swifts, 2018 onwards, between 3 and 6 lakh rupees"
+    },
+    {
+      "path": "media/02-proof.png",
+      "alt": "Terminal window showing the JSON output of one olxcars search result, with the fields id, title, price, year, km, fuel, transmission, owner, city, state, coordinates, seller type and the listing URL.",
+      "caption": "One car, every field an agent needs to rank it"
+    }
+  ],
+  "evidence": [
+    "olxcars/client.py - every OLX URL and query-parameter name in one module",
+    "curl_cffi requests.get(..., impersonate='chrome') - the only client that returned HTTP 200 from www.olx.in",
+    "tests/test_models.py - 5 offline tests; tests/test_live.py - 3 live tests including an MCP stdio round-trip",
+    "python -m pytest -q -> 5 passed, 3 skipped; OLXCARS_LIVE=1 python -m pytest -> 8 passed"
+  ]
+}

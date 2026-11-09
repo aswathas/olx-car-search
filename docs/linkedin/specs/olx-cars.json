@@ -1,11 +1,11 @@
 {
   "slug": "olx-cars",
-  "date": "2026-11-09",
+  "date": "2026-11-10",
   "title": "OLX India used cars, from a terminal and from an agent",
   "format": "F7-odd-precision-money-ledger",
-  "hook": "₹0, 592 lines of Python, 1 dependency.\n\nOLX India has no public API, so I read the one its own frontend calls. Here is the whole ledger, nothing rounded:",
+  "hook": "₹0, 592 lines of Python, 1 dependency.\n\nThe whole tool, free: github.com/aswathas/olx-car-search",
   "body": [
-    "- API key: ₹0\n- Proxy: ₹0\n- Account: ₹0\n- Dependencies: 1 (curl_cffi, impersonate=\"chrome\")\n- HTTP clients that got through: 1 of 4\n- OLX requests per search: 1\n- Cars per response: 20\n- Python: 592 lines, plus 152 of tests\n- Tests: 8 (5 offline, 3 live, one full MCP round-trip)",
+    "OLX India has no public API, so I read the one its own frontend calls. Here is the whole ledger, nothing rounded:\n\n- API key: ₹0\n- Proxy: ₹0\n- Account: ₹0\n- Dependencies: 1 (curl_cffi, impersonate=\"chrome\")\n- HTTP clients that got through: 1 of 4\n- OLX requests per search: 1\n- Cars per response: 20\n- Python: 592 lines, plus 152 of tests\n- Tests: 8 (5 offline, 3 live, one full MCP round-trip)",
     "The obvious path was a scraping proxy. I never bought one, so I never found out what it costs. A proxy would have hidden the problem instead of solving it.",
     "curl, Python requests and headless Chrome all got a connection reset from OLX — before a byte of HTML arrived. I watched Chrome print ERR_HTTP2_PROTOCOL_ERROR instead of a page, and that is a TLS-layer problem wearing an HTTP costume. Chrome itself was blocked, which is the part that took me the longest to believe. curl_cffi sends a real Chrome handshake, so it got 200 OK and clean JSON.",
     "The surprise came later. OLX ignores unknown query parameters silently, so a filter that does not exist looks exactly like a filter that worked. Nothing errors. The filter just returns everything. The only honest check was OLX's own applied_filters echo in the response, so the tool prints it on every run.",
@@ -13,10 +13,16 @@
     "One handshake beat four clients.",
     "Which layer burned you last: the handshake, the auth, or the rate limit?"
   ],
-  "cta": "P.S. The repo is public and MIT, and installs as a Claude Code plugin with one command: github.com/aswathas/olx-car-search",
-  "hashtags": ["opensource", "python"],
+  "cta": "P.S. Public and MIT. It installs as a Claude Code plugin with one command.",
+  "hashtags": [
+    "opensource",
+    "python"
+  ],
   "links": [
-    {"label": "olxcars on GitHub", "url": "https://github.com/aswathas/olx-car-search"}
+    {
+      "label": "olxcars on GitHub",
+      "url": "https://github.com/aswathas/olx-car-search"
+    }
   ],
   "images": [
     {

@@ -1,0 +1,25 @@
+{
+  "name": "olxcars",
+  "description": "Search used cars on OLX India from a terminal or an AI agent (MCP server).",
+  "version": "0.1.0",
+  "author": {
+    "name": "aswathas",
+    "url": "https://github.com/aswathas"
+  },
+  "homepage": "https://github.com/aswathas/olx-car-search",
+  "repository": "https://github.com/aswathas/olx-car-search",
+  "license": "MIT",
+  "keywords": ["olx", "used-cars", "india", "mcp", "cli", "marketplace"],
+  "skills": ["./skills/catalog/aswath-olx-car-search"],
+  "mcpServers": {
+    "olxcars": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/aswathas/olx-car-search",
+        "olxcars",
+        "mcp"
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "olx-car-search",
+  "owner": {
+    "name": "aswathas",
+    "url": "https://github.com/aswathas"
+  },
+  "plugins": [
+    {
+      "name": "olxcars",
+      "source": "./",
+      "description": "OLX India used-car search: CLI + MCP server for AI agents."
+    }
+  ]
+}

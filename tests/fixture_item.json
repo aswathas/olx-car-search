@@ -1,0 +1,222 @@
+{
+  "id": "1859334227",
+  "score": 0.9166666666666666,
+  "spell": {
+    "id": 112,
+    "key": "DISCERN_LOCATION_ES",
+    "version": "1",
+    "main": false,
+    "facet_disabled": false,
+    "default_sorting": "DEFAULT",
+    "response_type": "ARRAY"
+  },
+  "status": {
+    "status": "active",
+    "allow_edit": true,
+    "display": "active",
+    "translated_display": "Active",
+    "flags": {
+      "hot": false,
+      "new": false
+    },
+    "allow_deactivate": true
+  },
+  "category_id": "84",
+  "user": {
+    "verified_badge": {
+      "is_eligible": true
+    },
+    "features": [
+      {
+        "status": "ACTIVE",
+        "type": "ELITE_SELLER"
+      }
+    ]
+  },
+  "ad_id": "1859334227",
+  "favorites": {
+    "count": 0,
+    "count_label_next": "1"
+  },
+  "user_tag": "olx disapproved",
+  "user_name": "Shivang",
+  "has_phone_param": true,
+  "description": "Reliable Maruti Suzuki Swift Dzire 2014 december model with excellent condition.\n- Variant: 1.2 ZXI top model \n- Engine: Petrol\n- Transmission: Manual\n- Odometer: 95000 km driven\n- First owner\n- Excellent condition\n- Perfect for daily commute and family use",
+  "created_at": "2026-10-27T13:10:40+05:30",
+  "videos": [],
+  "title": "Swift Dzire 2014 December Manual Petrol top model",
+  "buyer_id": "0",
+  "car_body_type": "SEDAN",
+  "elite_seller": true,
+  "user_type": "Regular",
+  "price": {
+    "value": {
+      "raw": 345000.0,
+      "currency": {
+        "iso_4217": "INR",
+        "pre": "₹",
+        "locale": "hi_IN"
+      },
+      "display": "₹ 3,45,000"
+    },
+    "key_name": "Price",
+    "key": "price"
+  },
+  "is_business": false,
+  "fair_price": false,
+  "images": [
+    {
+      "width": 810,
+      "height": 1080,
+      "url": "https://apollo.olx.in:443/v1/files/lgnw02pozous-IN/image",
+      "full": {
+        "width": 1080,
+        "height": 1440,
+        "url": "https://apollo.olx.in:443/v1/files/lgnw02pozous-IN/image;s=1080x1440"
+      },
+      "big": {
+        "width": 505,
+        "height": 673,
+        "url": "https://apollo.olx.in:443/v1/files/lgnw02pozous-IN/image;s=505x673"
+      },
+      "medium": {
+        "width": 120,
+        "height": 160,
+        "url": "https://apollo.olx.in:443/v1/files/lgnw02pozous-IN/image;s=120x160"
+      },
+      "small": {
+        "width": 120,
+        "height": 160,
+        "url": "https://apollo.olx.in:443/v1/files/lgnw02pozous-IN/image;s=120x160"
+      },
+      "id": "2166163618",
+      "external_id": "lgnw02pozous-IN"
+    },
+    {
+      "width": 810,
+      "height": 1080,
+      "url": "https://apollo.olx.in:443/v1/files/bv690d6ieb4w-IN/image",
+      "full": {
+        "width": 1080,
+        "height": 1440,
+        "url": "https://apollo.olx.in:443/v1/files/bv690d6ieb4w-IN/image;s=1080x1440"
+      },
+      "big": {
+        "width": 505,
+        "height": 673,
+        "url": "https://apollo.olx.in:443/v1/files/bv690d6ieb4w-IN/image;s=505x673"
+      },
+      "medium": {
+        "width": 120,
+        "height": 160,
+        "url": "https://apollo.olx.in:443/v1/files/bv690d6ieb4w-IN/image;s=120x160"
+      },
+      "small": {
+        "width": 120,
+        "height": 160,
+        "url": "https://apollo.olx.in:443/v1/files/bv690d6ieb4w-IN/image;s=120x160"
+      },
+      "id": "2166163619",
+      "external_id": "bv690d6ieb4w-IN"
+    }
+  ],
+  "certified_car": false,
+  "package": {
+    "id": "2029086"
+  },
+  "user_created_at": "2023-11-05T17:43:18",
+  "is_kyc_verified_user": false,
+  "locations_resolved": {
+    "COUNTRY_id": "1000001",
+    "COUNTRY_name": "India",
+    "ADMIN_LEVEL_1_id": "2001176",
+    "ADMIN_LEVEL_1_name": "Uttar Pradesh",
+    "ADMIN_LEVEL_3_id": "4059256",
+    "ADMIN_LEVEL_3_name": "Bareilly",
+    "SUBLOCALITY_LEVEL_1_id": "5339995",
+    "SUBLOCALITY_LEVEL_1_name": "City Heart Colony"
+  },
+  "main_info": "2014 - 95,000 km",
+  "dealer_showroom_enabled": false,
+  "artificial_boost": false,
+  "display_date": "2026-10-20T08:15:51+0000",
+  "isSpinViewAvailable": false,
+  "user_id": "588351084",
+  "created_at_first": "2026-10-20T13:45:51+05:30",
+  "locations": [
+    {
+      "attributes": {},
+      "lat": 28.372,
+      "lon": 79.434,
+      "region_id": "2001176",
+      "city_id": "4059256",
+      "district_id": "5339995"
+    }
+  ],
+  "parameters": [
+    {
+      "type": "single",
+      "key": "make",
+      "value_name": "Maruti Suzuki",
+      "value": "maruti-suzuki",
+      "key_name": "Brand",
+      "formatted_value": "Maruti Suzuki"
+    },
+    {
+      "type": "single",
+      "key": "model",
+      "value_name": "Swift Dzire",
+      "value": "maruti-suzuki-swift-dzire",
+      "key_name": "Model",
+      "formatted_value": "Swift Dzire"
+    },
+    {
+      "type": "single",
+      "key": "variant",
+      "value_name": "2012-2015 1.2 ZXI",
+      "value": "maruti-suzuki-swift-dzire-2012-2015-1.2-zxi",
+      "key_name": "Variant",
+      "formatted_value": "2012-2015 1.2 ZXI"
+    },
+    {
+      "type": "single",
+      "key": "year",
+      "value_name": "2014",
+      "value": "2014",
+      "key_name": "Year",
+      "formatted_value": "2014"
+    },
+    {
+      "type": "single",
+      "key": "petrol",
+      "value_name": "Petrol",
+      "value": "petrol",
+      "key_name": "Fuel",
+      "formatted_value": "Petrol"
+    },
+    {
+      "type": "single",
+      "key": "transmission",
+      "value_name": "Manual",
+      "value": "2",
+      "key_name": "Transmission",
+      "formatted_value": "Manual"
+    },
+    {
+      "type": "single",
+      "key": "mileage",
+      "value_name": "95000",
+      "value": "95000",
+      "key_name": "KM driven",
+      "formatted_value": "95,000 km"
+    },
+    {
+      "type": "single",
+      "key": "first_owner",
+      "value_name": "1st",
+      "value": "1",
+      "key_name": "No. of Owners",
+      "formatted_value": "1st"
+    }
+  ]
+}

@@ -103,6 +103,13 @@ def check(spec: dict, spec_dir: Path) -> list[str]:
     if "--" in text:
         failures.append("double dash present")
 
+    # LinkedIn truncates the post at the first unescaped "(" and strips "_".
+    # Verified on five live posts: no paren -> stored whole, paren -> cut there.
+    if re.search(r"[()]", text):
+        failures.append("unescaped parenthesis: LinkedIn truncates the post at the first '('")
+    if "_" in text:
+        failures.append("underscore: LinkedIn strips '_' from the rendered post")
+
     if len(text) > 3000:
         failures.append(f"post is {len(text)} characters, max 3000")
     return failures

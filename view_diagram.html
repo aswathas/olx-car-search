@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Code Mode vs MCP Architecture - Visual Diagram</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad: true, theme: 'dark'});</script>
+<style>
+  body {
+    background-color: #0f111a;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 30px;
+    margin: 0;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 { color: #38bdf8; text-align: center; margin-bottom: 8px; }
+  p.subtitle { text-align: center; color: #94a3b8; margin-top: 0; margin-bottom: 30px; font-size: 1.1em; }
+  .card {
+    background: #1e2233;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    border: 1px solid #334155;
+  }
+  h2 { color: #f472b6; margin-top: 0; }
+  .badge-bad { background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+  .badge-good { background: #10b981; color: white; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #334155; }
+  th { background: #0f172a; color: #38bdf8; }
+  pre { background: #0b0f19; padding: 16px; border-radius: 8px; color: #a5f3fc; overflow-x: auto; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Code Mode vs MCP Architecture (OLX Cars)</h1>
+  <p class="subtitle">Why Code Mode cuts token tax by 99.5% for data retrieval</p>
+
+  <div class="card">
+    <h2>1. The Problem: Traditional MCP Function Calling <span class="badge-bad">High Token Tax</span></h2>
+    <p>Every page fetch dumps 20 raw ads (~40 KB JSON) straight into the LLM context. 3 pages = 120 KB (over 30,000 tokens) wasted just to find 3 cars.</p>
+    <div class="mermaid">
+    sequenceDiagram
+        autonumber
+        actor User as User
+        participant Agent as LLM Agent (Context)
+        participant MCP as MCP Server
+        participant OLX as OLX India API
+
+        User->>Agent: "Find 3 automatic i10s under 4L"
+        Agent->>MCP: call tool search_cars(page=1)
+        MCP->>OLX: GET /relevance/v4/search
+        OLX-->>MCP: 20 raw ads JSON (40 KB)
+        MCP-->>Agent: Returns 40 KB JSON into Context
+        Note over Agent: Context explodes +10,000 tokens!
+        Agent->>MCP: call tool search_cars(page=2)
+        MCP->>OLX: GET /relevance/v4/search
+        OLX-->>MCP: 20 raw ads JSON (40 KB)
+        MCP-->>Agent: Returns 40 KB JSON into Context
+        Note over Agent: Another +10,000 tokens burned!
+        Agent->>User: "Here are 3 cars..."
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. The Solution: In-Memory Code Mode <span class="badge-good">99.5% Token Savings</span></h2>
+    <p>The agent writes a 6-line script. Loops, pagination, and filtering happen inside local memory (RAM). Only the 3 selected cars enter LLM context.</p>
+    <div class="mermaid">
+    flowchart TD
+        subgraph Agent["LLM Context Window"]
+            U["User Request"] --> S["LLM Writes 6-line Python Script"]
+            Ans["LLM Reads Final 3 Cars (150 tokens)"]
+        end
+
+        subgraph Sandbox["Local Python Memory (Code Mode)"]
+            Exec["Execute Script in RAM"]
+            Loop["Loop Pages 1..3 in Memory"]
+            Filter["Filter: 1st Owner & Price <= 400000"]
+            Rank["Rank by Mileage / Condition"]
+            Stdout["Print Top 3 Cars to stdout"]
+        end
+
+        subgraph Remote["OLX Edge API"]
+            API["api.olx.in/relevance/v4/search"]
+        end
+
+        S --> Exec
+        Exec --> Loop
+        Loop <-->|Fast curl_cffi| API
+        Loop --> Filter
+        Filter --> Rank
+        Rank --> Stdout
+        Stdout --> Ans
+
+        style Agent fill:#1e1e2e,stroke:#cdd6f4,color:#cdd6f4
+        style Sandbox fill:#181825,stroke:#89b4fa,color:#cdd6f4
+        style Remote fill:#11111b,stroke:#f38ba8,color:#cdd6f4
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3. The Exact Python Script That Powers Code Mode</h2>
+    <pre>from olxcars.client import OlxClient
+
+client = OlxClient()
+loc = client.resolve_city("Chennai", state="Tamil Nadu")[0]["id"]
+
+# Fetch multiple pages inside RAM
+candidates = []
+for page in range(1, 4):
+    res = client.search(query="i10", location=loc, transmission="automatic", max_price=400000, page=page)
+    candidates.extend(res.get("cars", []))
+
+# In-memory filter & sort (Zero LLM token cost)
+top3 = sorted([c for c in candidates if c.get("owner") == "first"], key=lambda c: c.get("km", 999999))[:3]
+
+# Only stdout enters LLM context!
+for car in top3:
+    print(f"{car['price_display']} | {car['year']} {car['title']} | {car['km']} km | {car['url']}")</pre>
+  </div>
+
+  <div class="card">
+    <h2>4. Comparison Matrix</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Paradigm</th>
+          <th>How It Works</th>
+          <th>Token Cost</th>
+          <th>Round Trips</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>MCP / Function Calling</b></td>
+          <td>Dumps raw JSON per page into context</td>
+          <td>🔴 30,000+ tokens</td>
+          <td>3-5 turns</td>
+          <td>Terrible for lists & search</td>
+        </tr>
+        <tr>
+          <td><b>CLI Tool</b></td>
+          <td>Runs <code>olxcars search ... --table</code></td>
+          <td>🟢 ~800 tokens</td>
+          <td>1 turn</td>
+          <td>Good for simple 1-page flags</td>
+        </tr>
+        <tr>
+          <td><b>Code Mode (Python)</b></td>
+          <td>Paginates & filters in RAM via SDK</td>
+          <td>🚀 ~150 tokens</td>
+          <td>1 turn</td>
+          <td><b>Winner: 99.5% savings & infinite flexibility</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

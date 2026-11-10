@@ -166,12 +166,16 @@ class OlxQuery:
         self._filters["max_km"] = int(max_km)
         return self
 
-    def owner(self, owner_val: str) -> OlxQuery:
-        self._filters["owner"] = str(owner_val).lower()
+    def owner(self, owner_val: str, server_side: bool = False) -> OlxQuery:
+        """Filter by owner. Defaults to robust in-memory filtering due to OLX server indexing bugs."""
+        if server_side:
+            self._filters["owner"] = str(owner_val).lower()
+        else:
+            self._in_memory_owner = str(owner_val).lower()
         return self
 
-    def first_owner(self) -> OlxQuery:
-        return self.owner("first")
+    def first_owner(self, server_side: bool = False) -> OlxQuery:
+        return self.owner("first", server_side=server_side)
 
     def sort(self, sort_order: str) -> OlxQuery:
         self._filters["sort"] = sort_order
@@ -208,4 +212,7 @@ class OlxQuery:
                     seen_ids.add(cid)
                     all_cars.append(c)
 
-        return CarCollection(all_cars)
+        collection = CarCollection(all_cars)
+        if hasattr(self, "_in_memory_owner") and self._in_memory_owner:
+            collection = collection.filter_owner(self._in_memory_owner)
+        return collection

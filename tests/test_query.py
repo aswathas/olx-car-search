@@ -71,7 +71,7 @@ def test_olx_query_builder_params():
     assert q._state == "Tamil Nadu"
     assert q._filters["transmission"] == "automatic"
     assert q._filters["max_price"] == 400000
-    assert q._filters["owner"] == "first"
+    assert q._in_memory_owner == "first"
     assert q._filters["fuel"] == "petrol"
 
 

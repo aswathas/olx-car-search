@@ -102,6 +102,44 @@ def cmd_listing(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_run(args: argparse.Namespace) -> int:
+    """Execute Python code in-memory with OlxQuery and client pre-loaded."""
+    from .query import OlxQuery, CarCollection, CarItem
+    client = OlxClient()
+    scope = {
+        "OlxQuery": OlxQuery,
+        "CarCollection": CarCollection,
+        "CarItem": CarItem,
+        "OlxClient": OlxClient,
+        "client": client,
+        "query": OlxQuery,
+    }
+    code = args.code
+    if args.file:
+        with open(args.file, "r", encoding="utf-8") as f:
+            code = f.read()
+    if not code:
+        print("error: no code or script file provided", file=sys.stderr)
+        return 2
+
+    code = code.strip()
+    try:
+        # First try evaluating as a single expression
+        result = eval(code, scope)
+        if result is not None:
+            if hasattr(result, "compact") and callable(result.compact):
+                print(result.compact())
+            elif isinstance(result, (dict, list)):
+                print(json.dumps(result, indent=2, ensure_ascii=False))
+            else:
+                print(result)
+        return 0
+    except SyntaxError:
+        # Multi-line statement / script
+        exec(code, scope)
+        return 0
+
+
 def cmd_mcp(args: argparse.Namespace) -> int:
     from .mcp_server import main as mcp_main
 
@@ -126,6 +164,11 @@ def build_parser() -> argparse.ArgumentParser:
     listing = sub.add_parser("listing", help="full detail for one ad id")
     listing.add_argument("item_id")
     listing.set_defaults(func=cmd_listing)
+
+    run = sub.add_parser("run", help="execute Python Code Mode query with OlxQuery in-memory")
+    run.add_argument("code", nargs="?", help="Python expression or code block")
+    run.add_argument("-f", "--file", help="path to a python script file")
+    run.set_defaults(func=cmd_run)
 
     mcp = sub.add_parser("mcp", help="run the MCP server on stdio")
     mcp.set_defaults(func=cmd_mcp)

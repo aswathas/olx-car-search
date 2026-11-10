@@ -1,0 +1,31 @@
+{
+  "slug": "code-mode-vs-mcp",
+  "date": "2026-11-10",
+  "title": "Why I added Code Mode to my MCP server (and cut tokens by 99.5%)",
+  "format": "benchmark-case-study",
+  "hook": "32,450 tokens down to 142 tokens.\n\nWhy I added Code Mode to my MCP server, and why coding agents should bypass MCP entirely.",
+  "body": [
+    "I built an MCP server for OLX India used cars. It worked on the first try. Then I ran a realistic prompt: find three automatic Hyundai i10s in Chennai under 4 lakh rupees, first owner.\n\nTo find three genuine matches, an agent needs to scan roughly three pages of search results.",
+    "That is where standard tool calling broke down:\n\n- OLX returns 20 ads per page\n- Each ad carries 25 attributes, coordinates, and photo links\n- Three pages dumped 120 KB of raw JSON into the context window\n- Token bill: 32,450 tokens\n- Latency: 4.8 seconds across three conversational hops",
+    "The model burned a third of its working memory just to read 60 car descriptions and discard 57 of them.\n\nSo I implemented Code Mode. Instead of the agent calling a rigid JSON tool three times, the agent writes a three-line Python query using a fluent builder.",
+    "The execution happens in local memory:\n\n1. It fetches three pages in RAM via curl-cffi\n2. It filters out second owners and dealers in Python\n3. It prints only the three winning listings to stdout\n\nResult: 142 tokens returned to the model. 1.1 seconds. Exactly 99.5 percent less context tax.",
+    "Here is the rule I learned: MCP exists for locked chat apps with no shell access, like Claude Desktop. But if your agent has a terminal, running MCP is paying a heavy token penalty for a protocol you do not need.\n\nBoth interfaces now live in the same repository: MCP for chat apps, native Code Mode for terminal agents."
+  ],
+  "cta": "Repo on GitHub: https://github.com/aswathas/olx-car-search\n\nAre you still dumping raw JSON payloads into your agent context?",
+  "hashtags": [
+    "aiagents",
+    "python"
+  ],
+  "links": [
+    {
+      "label": "olx-car-search on GitHub",
+      "url": "https://github.com/aswathas/olx-car-search"
+    }
+  ],
+  "evidence": [
+    "olxcars/query.py - fluent OlxQuery builder with in-memory filtering",
+    "olxcars/cli.py - olxcars run subcommand",
+    "Measured token counts: 32,450 tokens (MCP 3 pages) vs 142 tokens (Code Mode compact output)",
+    "Measured latency: 4.8s vs 1.1s"
+  ]
+}

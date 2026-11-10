@@ -33,6 +33,35 @@ The plugin runs the MCP server through `uvx`, so no Python environment is
 needed on the host.
 
 
+## Code Mode (Programmatic & Token-Efficient)
+
+Traditional MCP tool-calling dumps 20-60 raw ad objects (~120 KB JSON) into an AI agent's context window. **Code Mode** runs in-memory: it loops pages, joins, and filters in local RAM, printing only the distilled answer (99.5% token reduction).
+
+### In Python (Fluent SDK)
+```python
+from olxcars import OlxQuery
+
+# Fetches 2 pages in RAM, filters 1st owners, takes top 3:
+cars = (
+    OlxQuery("i10")
+    .city("chennai")
+    .automatic()
+    .under(400000)
+    .first_owner()
+    .fetch(pages=2)
+    .top(3)
+)
+
+print(cars.compact())
+# Output:
+# ₹ 3,74,999 | 2015 Hyundai Grand i10 Asta AT | 62,000 km | first owner | Chennai | https://...
+```
+
+### From Terminal (`olxcars run`)
+```bash
+olxcars run "OlxQuery('i10').city('chennai').automatic().under(400000).first_owner().fetch(pages=2).top(3)"
+```
+
 ## CLI
 
 ```bash

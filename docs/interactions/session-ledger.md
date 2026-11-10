@@ -48,3 +48,8 @@
   - Step 2: Implement Fluent `OlxQuery` and `CarCollection` with unit tests (Atomic commit).
   - Step 3: Implement `olxcars run` CLI execution runner with unit tests (Atomic commit).
   - Step 4: Add custom logging skill/hook and update README/SPEC (Atomic commit).
+
+### [2026-11-10 12:21:06] Implement Fluent Code Mode & CLI Runner
+- **User Prompt**: `yes implement code mode for olx and document it well`
+- **Agent Decision**: Built OlxQuery builder, in-memory owner filtering, and olxcars run subcommand
+- **Action / Output**: Commits 532c55c, a60f4f0, 247e937
